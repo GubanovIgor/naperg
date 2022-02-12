@@ -7,6 +7,9 @@
  */
 import { Context } from "../model/appInterface";
 import { Source } from '@prisma/client'
+import * as Parser from 'rss-parser';
+const parser = new Parser();
+
 
 // This is the number, in minutes, before a source is considered "stale" and
 // needs to be refreshed. That is, if a source has not been refreshed in the last
@@ -50,9 +53,7 @@ export const rssMutationResolvers = {
  * A type used only internally in this file for parsing an article from an RSS
  * feed.
  */
-interface ParsedArticle {
-  // TODO: Specify your custom type.
-}
+ import { Item } from 'rss-parser'
 
 /**
  * Returns a **list** of objects representing articles for the given RSS feed.
@@ -61,8 +62,9 @@ interface ParsedArticle {
  * can filter out articles that don't need to be refreshed. Think about how you
  * might be adding duplicate articles on accident.
  */
-const parseRssFeed = async (source: Source): Promise<ParsedArticle[]> => {
+const parseRssFeed = async (source: Source): Promise<Item[]> => {
   // TODO: Use the RSS parser here. This has been separated into its own
   // function for cleanliness.
-  return [];
+	const parsedSource = await parser.parseURL(source.rssFeedUrl)
+	return parsedSource.items
 };
