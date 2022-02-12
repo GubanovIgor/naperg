@@ -1,31 +1,22 @@
-/**
- * Contains resolvers related to refreshing RSS feeds.
- *
- * This would be an example of separating resolvers more cleanly into separate
- * files. Note that there are many ways to do this, depending on how large your
- * app is.
- */
+
+import { Item } from 'rss-parser'
 import { Context } from "../model/appInterface";
 import { Source } from '@prisma/client'
 import * as Parser from 'rss-parser';
 const parser = new Parser();
 
-
-// This is the number, in minutes, before a source is considered "stale" and
-// needs to be refreshed. That is, if a source has not been refreshed in the last
-// N minutes, it should be refreshed.
-//
-// You may change this value if you want for testing. You can even change it to
-// seconds.
-//
-// Please note the avoidance of magic numbers.
-// https://en.wikipedia.org/wiki/Magic_number_(programming)
 const SOURCE_STALENESS_MINUTES = 10;
 
 export const rssMutationResolvers = {
   refreshFeeds: async (parent, args, ctx: Context) => {
+		const { page } = args
+		console.log(page, 'page')
+
 		const { prisma } = ctx
-    let staleSources : Source[] = await prisma.source.findMany();
+    let staleSources : Source[] = await prisma.source.findMany({
+			skip: 2 * (page - 1),
+			take: 2
+		});
 		staleSources = staleSources.filter((source) => shouldUpdate(source.lastRefreshedAt))
 
 		let counter = 0 // counter for new articles that added to DB
@@ -86,22 +77,11 @@ function createArticle(prisma, article: Item, source: Source) {
 	})
 }
 
-/**
- * A type used only internally in this file for parsing an article from an RSS
- * feed.
- */
- import { Item } from 'rss-parser'
 
-/**
- * Returns a **list** of objects representing articles for the given RSS feed.
- *
- * Optional: You may want this to take "SOURCE_STALENESS_MINUTES" too, so you
- * can filter out articles that don't need to be refreshed. Think about how you
- * might be adding duplicate articles on accident.
- */
+
+
 const parseRssFeed = async (source: Source): Promise<Item[]> => {
-  // TODO: Use the RSS parser here. This has been separated into its own
-  // function for cleanliness.
+  // TODO: Add error handling
 	const parsedSource = await parser.parseURL(source.rssFeedUrl)
 	return parsedSource.items
 };

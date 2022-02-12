@@ -4,12 +4,12 @@ import { request, gql } from 'graphql-request'
 
 const mutation = gql`
   mutation Mutation($page: Int!) {
-    refreshFeeds(page: page)
+    refreshFeeds(page: $page)
   }
 `
 
 const querySourcesCount = gql`
-  query Query() {
+  query Query {
     sourcesCount
   }
 `
@@ -17,22 +17,19 @@ const querySourcesCount = gql`
 const fetchTheData = async () => {
   console.log('cron function executed')
   const { sourcesCount } = await request(`http://localhost:4000/`, querySourcesCount)
+	console.log(sourcesCount, 'sourcesCount')
+	const pageCount = Math.ceil(sourcesCount / 2)
 
-  for (let i = 0; i < sourcesCount; i++) {
-    request(`http://localhost:4000/`, mutation, {
-      page: i,
-    })
-      .then((data) => console.log(data))
-      .catch((err) => {
-        console.log(err)
-      })
+  for (let i = 1; i <= pageCount; i++) {
+    const res = await request(`http://localhost:4000/`, mutation, {
+			page: i
+		})
+		console.log(res)
   }
-
-  return 1
 }
 
 async function main() {
-  const cronUpd = new cron.CronJob('30 * * * * *', function () {
+  const cronUpd = new cron.CronJob('10 * * * * *', function () {
     fetchTheData()
   })
 
