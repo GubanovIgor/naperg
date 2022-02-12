@@ -6,7 +6,7 @@
  * app is.
  */
 import { Context } from "../model/appInterface";
-import { prisma, Source } from '@prisma/client'
+import { Source } from '@prisma/client'
 import * as Parser from 'rss-parser';
 const parser = new Parser();
 
@@ -24,32 +24,29 @@ const SOURCE_STALENESS_MINUTES = 10;
 
 export const rssMutationResolvers = {
   refreshFeeds: async (parent, args, ctx: Context) => {
+		const { prisma } = ctx
     // TODO: Using Prisma, query for all sources. Filter only for stale sources,
     // either using Prisma filters or using code.
-    const staleSources : Source[] = await ctx.prisma.source.findMany();
+    let staleSources : Source[] = await prisma.source.findMany();
+		// staleSources = staleSources.filter((source) => source.lastRefreshedAt)
 
     for (let i = 0; i < staleSources.length; i++) {
-      // TODO: For each stale source, use an RSS parser of your choice to parse the RSS feed.
-      // https://www.google.com/search?q=rss+feed+parser+node
-      // You may need to change this code depending on your approach for
-      // handling asynchronicity.
-      const parsedResult = await parseRssFeed(staleSources[i]);
-      // TODO: For each article in parsed result, update or insert the
-      // corresponding article. You may need to change your schema here: how do
-      // you "deduplicate" articles?]
+			const source = staleSources[i]
+      const parsedResult = await parseRssFeed(staleSources[i])
+
 			for (let i = 0; i < parsedResult.length; i++) {
-				await ctx.prisma.article.create({
-					data: {
-						title: parsedResult[i].title || '',
-						url: parsedResult[i].link || '',
-						content: parsedResult[i].content || '',
-						author: parsedResult[i].creator || '',
-						sourceId: staleSources[i].id
+				const article = parsedResult[i]
+				const articlesCount = await prisma.article.count({
+					where: {
+						title: article.title
 					}
 				})
+				console.log(articlesCount, 'articles count')
+				if(!articlesCount) {
+					console.log('works')
+					await createArticle(prisma, article, source)
+				}
 			}
-      // TODO: Make sure that somewhere, somehow, the lastRefreshedAt time for
-      // the source is correct.
     }
 
     // TODO: How do you test this resolver? What gets mocked? You don't need to
@@ -57,6 +54,18 @@ export const rssMutationResolvers = {
     // your response below.
   },
 };
+
+function createArticle(prisma, article: Item, source: Source) {
+	return prisma.article.create({
+		data: {
+			title: article.title || '',
+			url: article.link || '',
+			content: article.content || '',
+			author: article.creator || '',
+			sourceId: source.id
+		}
+	})
+}
 
 /**
  * A type used only internally in this file for parsing an article from an RSS
