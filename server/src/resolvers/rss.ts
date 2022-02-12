@@ -28,6 +28,7 @@ export const rssMutationResolvers = {
     // TODO: Using Prisma, query for all sources. Filter only for stale sources,
     // either using Prisma filters or using code.
     let staleSources : Source[] = await prisma.source.findMany();
+		let counter = 0
 		// staleSources = staleSources.filter((source) => source.lastRefreshedAt)
 
     for (let i = 0; i < staleSources.length; i++) {
@@ -41,13 +42,13 @@ export const rssMutationResolvers = {
 						title: article.title
 					}
 				})
-				console.log(articlesCount, 'articles count')
 				if(!articlesCount) {
-					console.log('works')
 					await createArticle(prisma, article, source)
+					counter++
 				}
 			}
     }
+		return counter
 
     // TODO: How do you test this resolver? What gets mocked? You don't need to
     // actually write the tests, but think about how you would do this. Write

@@ -3,7 +3,8 @@
   "scripts": {
     "start-watch": "ts-node-dev --no-notify --respawn --transpile-only src/server",
     "start": "ts-node src/server.ts",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "puller": "ts-node script/puller.ts"
   },
   "dependencies": {
     "@prisma/client": "3.0.2",
