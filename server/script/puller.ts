@@ -1,39 +1,41 @@
-/**
- * A script that checks RSS feeds and refreshes and checks only those that need
- * to be updated.
- *
- * Note that this script ONLY interacts with a GraphQL API (in this case, it
- * happens to be the same one that the frontend uses, for simplicity). It does
- * not touch Prisma directly. It should not touch Prisma directly. If you are
- * tempted to use Prisma directly, then you are thinking incorrectly about the
- * clean division of responsibilities.
- *
- * Of course, in this case, this script happens to be in the same repository as
- * the Prisma things, but that's only for convenience of delivering the code to
- * you in this case.
- *
- * For further reference, see "architecture 0" on the lecture slides.
- */
+import * as cron from 'cron'
+import { request, gql } from 'graphql-request'
 
-async function main() {
-  // TODO: Use a GraphQL client or a simple `fetch` to call the endpoint to
-  // refresh all feeds with the appropriate arguments.
-
+// FIXME: right query
+const query = gql`
+  {
+    Movie(title: "Inception") {
+      releaseDate
+      actors {
+        name
+      }
+    }
+  }
+`
+// FIXME: right adress
+const fetchTheData = () => {
+  request('https://api.graph.cool/simple/v1/movies', query).then((data) =>
+    console.log(data),
+  )
 }
 
-// TODO: Last time, people seemed confused about where the "scheduling"
-// happens. It does not happen in the code. This script does not know when it's
-// called, it just knows how to trigger an endpoint.
-//
-// Answer the following questions (you don't need to actually do these),
-// Googling the answer and writing it in your own words.
-//
-// 1. When you use cron, what file do you change in order set up a cron job?
-// 2. What would be the cron line you would add to run this script once a day?
-// 3. And what about for once every 10 minutes?
-main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
+async function main() {
+  const cronUpd = new cron.CronJob('0 30 * * * *', function () {
+    fetchTheData()
+      .then((r) => {})
+      .catch(() => {})
   })
 
+  cronUpd.start()
+  console.log('CRON job is started')
+}
+
+// TODO: 
+// 1. When you use cron, what file do you change in order set up a cron job?
+// 2. What would be the cron line you would add to run this script once a day? '0 30 12 * * 0-7'
+// 3. And what about for once every 10 minutes?  '0 10 * * * *'
+
+main().catch((e) => {
+  console.error(e)
+  process.exit(1)
+})
