@@ -25,24 +25,33 @@ const SOURCE_STALENESS_MINUTES = 10;
 export const rssMutationResolvers = {
   refreshFeeds: async (parent, args, ctx: Context) => {
 		const { prisma } = ctx
-    // TODO: Using Prisma, query for all sources. Filter only for stale sources,
-    // either using Prisma filters or using code.
     let staleSources : Source[] = await prisma.source.findMany();
-		let counter = 0
-		// staleSources = staleSources.filter((source) => source.lastRefreshedAt)
+		staleSources = staleSources.filter((source) => shouldUpdate(source.lastRefreshedAt))
+
+		let counter = 0 // counter for new articles that added to DB
+		const articles = await prisma.article.findMany()
+		const articlesHash = articles.reduce((hash, article) => {
+			hash[article.title] = true
+			return hash
+		}, {})
 
     for (let i = 0; i < staleSources.length; i++) {
 			const source = staleSources[i]
       const parsedResult = await parseRssFeed(staleSources[i])
+			await prisma.source.update({
+				where: {
+					id: staleSources[i].id
+				},
+				data: {
+					lastRefreshedAt: new Date()
+				}
+			})
 
 			for (let i = 0; i < parsedResult.length; i++) {
 				const article = parsedResult[i]
-				const articlesCount = await prisma.article.count({
-					where: {
-						title: article.title
-					}
-				})
-				if(!articlesCount) {
+				const articleExist = articlesHash[article.title || 'N/A']
+
+				if(!articleExist) {
 					await createArticle(prisma, article, source)
 					counter++
 				}
@@ -55,6 +64,15 @@ export const rssMutationResolvers = {
     // your response below.
   },
 };
+
+function shouldUpdate(date: Date | null) {
+	if (!date) {
+		return true
+	}
+
+	const cutOff = Date.now() - 1000 * 60 * SOURCE_STALENESS_MINUTES;
+	return new Date(date).getTime() < cutOff
+}
 
 function createArticle(prisma, article: Item, source: Source) {
 	return prisma.article.create({
