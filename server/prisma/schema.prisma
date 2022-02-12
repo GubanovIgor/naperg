@@ -42,15 +42,16 @@ model Feed {
 
 // A single source that should be updated.
 model Source {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   name            String
   rssFeedUrl      String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
   // Not to be confused with updatedAt. updatedAt is when it was changed in the
   // database, and is handled by Prisma.
   lastRefreshedAt DateTime?
   feeds           Feed[]
+  articles        Article[]
 }
 
 model Article {
@@ -61,6 +62,8 @@ model Article {
   url       String
   content   String
   author    String?
-  feed      Feed     @relation(fields: [feedId], references: [id])
-  feedId    String
+  source    Source   @relation(fields: [sourceId], references: [id])
+  sourceId  String
+  Feed      Feed?    @relation(fields: [feedId], references: [id])
+  feedId    String?
 }

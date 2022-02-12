@@ -6,7 +6,7 @@
  * app is.
  */
 import { Context } from "../model/appInterface";
-import { Source } from '@prisma/client'
+import { prisma, Source } from '@prisma/client'
 import * as Parser from 'rss-parser';
 const parser = new Parser();
 
@@ -27,19 +27,27 @@ export const rssMutationResolvers = {
     // TODO: Using Prisma, query for all sources. Filter only for stale sources,
     // either using Prisma filters or using code.
     const staleSources : Source[] = await ctx.prisma.source.findMany();
-    console.log('staleSources: ', staleSources);
 
     for (let i = 0; i < staleSources.length; i++) {
       // TODO: For each stale source, use an RSS parser of your choice to parse the RSS feed.
       // https://www.google.com/search?q=rss+feed+parser+node
       // You may need to change this code depending on your approach for
       // handling asynchronicity.
-      const parsedResult = parseRssFeed(staleSources[i]);
-
+      const parsedResult = await parseRssFeed(staleSources[i]);
       // TODO: For each article in parsed result, update or insert the
       // corresponding article. You may need to change your schema here: how do
-      // you "deduplicate" articles?
-
+      // you "deduplicate" articles?]
+			for (let i = 0; i < parsedResult.length; i++) {
+				await ctx.prisma.article.create({
+					data: {
+						title: parsedResult[i].title || '',
+						url: parsedResult[i].link || '',
+						content: parsedResult[i].content || '',
+						author: parsedResult[i].creator || '',
+						sourceId: staleSources[i].id
+					}
+				})
+			}
       // TODO: Make sure that somewhere, somehow, the lastRefreshedAt time for
       // the source is correct.
     }
