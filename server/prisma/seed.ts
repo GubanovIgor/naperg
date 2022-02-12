@@ -41,11 +41,10 @@ const sourcesUrl = [
 
 const seedSources = () => {
   sourcesUrl.forEach(async (sourceUrl) => {
-    await prisma.article.create({
+    await prisma.source.create({
       data: {
-        name: '',
-        rssFeedUrl: sourceUrl,
-        feeds: [],
+        name: "test",
+        rssFeedUrl: sourceUrl
       },
     })
   })
