@@ -17,9 +17,9 @@ export const mutation = gql`
     # (real documentation of this endpoint below)
     # Triggers a refresh to process a specific set of feeds.
     # If no feedIds are provided, it refreshes all feeds in the DB.
-    # The return value of this endpoint is unused. 
+    # The return value of this endpoint is unused.
     #
     # https://stackoverflow.com/questions/44737043/is-it-possible-to-not-return-any-data-when-using-a-graphql-mutation
-    refreshFeeds(feedIds: [String!]): Int!
+    refreshFeeds(feedIds: [String!], pageNumber: Int!): Int!
   }
 `

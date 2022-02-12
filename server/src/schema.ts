@@ -45,6 +45,10 @@ export const resolvers = {
       const count = await ctx.prisma.user.count({ where })
       return { users, count, take }
     },
+
+    sourcesCount: async (parent, args, ctx: Context) => {
+      return await ctx.prisma.source.count()
+    }
   },
   Mutation: {
     ...rssMutationResolvers,
