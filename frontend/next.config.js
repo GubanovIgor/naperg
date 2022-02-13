@@ -1,6 +1,11 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-}
+const aliases = require('./aliases');
 
-module.exports = nextConfig
+module.exports = {
+  webpack(config) {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      ...aliases.absoluteAliases,
+    };
+    return config;
+  },
+};
