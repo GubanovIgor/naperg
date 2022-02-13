@@ -1,10 +1,21 @@
 import type { NextPage } from 'next'
+import React, { useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import styles from '../../styles/Home.module.css'
 import { Button } from 'antd'
+import { Store } from '../store'
+import { useContext } from 'react'
+import { ACTIONS } from '../store/actions'
 
 const Home: NextPage = () => {
+  const { state, dispatch } = useContext(Store)
+
+  useEffect(() => {
+    console.log('state: ', state)
+    console.log(dispatch)
+  }, [state])
+
   return (
     <div className={styles.container}>
       <Head>
@@ -14,7 +25,16 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <Button type='primary'>Button</Button>
+        <Button
+          type='primary'
+          onClick={() => {
+            console.log('im here1', ACTIONS.USER_AUTHORIZED);
+            debugger
+            dispatch({ type: ACTIONS.USER_AUTHORIZED, payload: true })
+          }}
+        >
+          Button
+        </Button>
       </main>
 
       <footer className={styles.footer}>

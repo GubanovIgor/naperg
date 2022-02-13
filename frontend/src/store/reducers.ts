@@ -12,6 +12,8 @@ const mainReducer = (
 ): MainReducer | InitialState => {
   switch (action.type) {
     case ACTIONS.USER_AUTHORIZED: {
+      console.log('im here2');
+      
       return { ...state, userAuthorized: action.payload };
     }
 
