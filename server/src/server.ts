@@ -6,7 +6,9 @@ import { makeExecutableSchema } from 'graphql-tools'
 import { query } from './typeDefs/query'
 import { user } from './typeDefs/user'
 import { article } from './typeDefs/article'
+import { feed } from './typeDefs/feed'
 import { mutation } from './typeDefs/mutation'
+
 const schema = makeExecutableSchema({
   typeDefs: [query, user, article, mutation],
   resolvers,

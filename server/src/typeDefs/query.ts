@@ -18,5 +18,6 @@ export const query = gql`
     sourcesCount: Int! @cacheControl(maxAge: 30)
     me: User!
 		getHeadlines: [Article] @cacheControl(maxAge: 30)
+    userFeeds: [Feed]
   }
 `

@@ -15,7 +15,14 @@ export const resolvers = {
 
       return ctx.prisma.user.findUnique({ where: { id: userId } })
     },
-    me: (parent, args, ctx: Context) => {
+
+    me: (parent, args, ctx: Context, info) => {
+      console.log('im here1')
+
+      info.cacheControl.setCacheHint({ maxAge: 60, scope: 'PRIVATE' })
+
+      console.log('im here2')
+
       const userId = utils.getUserId(ctx)
 
       if (userId) {
@@ -58,8 +65,23 @@ export const resolvers = {
 					article: true
 				}
 			})
-
 			return headlines.map((headline) => headline.article)
+		},
+    userFeeds: async (parent, args, ctx: Context) => {
+      console.log('works')
+      const userId = utils.getUserId(ctx)
+
+      if (!userId) {
+        throw new Error('Not loggedin')
+      }
+
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: userId },
+        include: { Feed: true }
+      })
+
+      console.log(user?.Feed)
+      return user?.Feed
     }
   },
   Mutation: {
@@ -234,6 +256,6 @@ export const resolvers = {
           expiresIn: '2d',
         }),
       }
-    },
-  },
+    }
+  }
 }

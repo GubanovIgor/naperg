@@ -4,6 +4,8 @@ import { Context, Decoded } from './model/appInterface'
 
 const utils = {
   getUserId: (ctx: Context) => {
+    // console.log('ctx: ', ctx);
+
     const { authorization } = ctx.req.headers
     const token = authorization.replace('Bearer ', '')
     const decoded = jwt.verify(token, config.APP_SECRET)
