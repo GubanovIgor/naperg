@@ -15,7 +15,7 @@ export default function BasicExample() {
       console.log("updateUser");
       setUser(user);
     },
-    [setUser, user]
+    [setUser]
   );
 
   return (

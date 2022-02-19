@@ -2,12 +2,25 @@ import { gql } from 'apollo-server'
 
 export const user = gql`
   scalar DateTime
-  type User {
+
+  enum CacheControlScope {
+    PUBLIC
+    PRIVATE
+  }
+
+  directive @cacheControl(
+    maxAge: Int
+    scope: CacheControlScope
+    inheritMaxAge: Boolean
+  ) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION
+
+  type User @cacheControl(maxAge: 60) {
     email: String!
     id: ID!
     name: String
     role: Role
     lastLogin: DateTime
+    feed: [Feed]
   }
   enum Role {
     ADMIN

@@ -3,17 +3,17 @@ import * as bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 async function main() {
-  // const user = await prisma.user.create({
-  //   data: {
-  //     email: `admin@naperg.com`,
-  //     name: 'Admin Naperg',
-  //     password: await bcrypt.hash('admin', 10),
-  //     role: 'ADMIN',
-  //     resetPasswordToken: '123',
-  //     validateEmailToken: '',
-  //     isEmailValidated: true,
-  //   },
-  // })
+  const user = await prisma.user.create({
+    data: {
+      email: 'admin@naperg.com',
+      name: 'Admin Naperg',
+      password: await bcrypt.hash('admin', 10),
+      role: 'ADMIN',
+      resetPasswordToken: '123',
+      validateEmailToken: '',
+      isEmailValidated: true,
+    },
+  })
 
 	const sourcesUrl = [
 		'https://news.un.org/feed/subscribe/ru/tags/un/feed/rss.xml',
