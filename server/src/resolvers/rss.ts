@@ -7,6 +7,7 @@ const parser = new Parser();
 type PrismaDB = PrismaClient<Prisma.PrismaClientOptions, never, Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined>
 
 const SOURCE_STALENESS_MINUTES = 10;
+const PAGE_SIZE = 2
 
 export const rssMutationResolvers = {
 	refreshFeeds: async (parent, args, ctx: Context) => {
@@ -30,8 +31,8 @@ export const rssMutationResolvers = {
 		const { prisma } = ctx
 
     let staleSources : Source[] = await prisma.source.findMany({
-			skip: 2 * (page - 1),
-			take: 2
+			skip: PAGE_SIZE * (page - 1),
+			take: PAGE_SIZE
 		})
 
 		return updateSourcesArticles(prisma, staleSources) 

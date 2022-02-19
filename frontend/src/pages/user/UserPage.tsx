@@ -19,6 +19,18 @@ export const QUERY = gql`
   }
 `;
 
+export const HEADLINES = gql`
+  query User($userId: String!) {
+    user(userId: $userId) {
+      id
+      name
+      email
+      role
+      lastLogin
+    }
+  }
+`;
+
 const UserPage = () => {
   const params: ParamTypes = useParams<ParamTypes>();
   const userId = params.userId;

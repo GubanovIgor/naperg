@@ -48,7 +48,7 @@ export default function Signup() {
           password,
         },
       });
-    } catch (e) {
+    } catch (e: any) {
       e.graphQLErrors.some((graphQLError: any) =>
         setMessage(graphQLError.message)
       );

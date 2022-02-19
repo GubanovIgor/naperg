@@ -4,7 +4,7 @@ import { request, gql } from 'graphql-request'
 
 const mutation = gql`
   mutation Mutation($page: Int!) {
-    refreshFeeds(page: $page)
+    refreshAllFeeds(page: $page)
   }
 `
 

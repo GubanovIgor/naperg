@@ -27,7 +27,7 @@ const DeleteUser = (props: Props) => {
           userId: props.userId,
         },
       });
-    } catch (e) {
+    } catch (e: any) {
       e.graphQLErrors.some((graphQLError: any) =>
         setMessage(graphQLError.message)
       );

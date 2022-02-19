@@ -22,5 +22,6 @@ export const mutation = gql`
     # https://stackoverflow.com/questions/44737043/is-it-possible-to-not-return-any-data-when-using-a-graphql-mutation
     refreshAllFeeds(feedIds: [String!], page: Int!): Int!
     refreshFeeds(feedIds: [String!], page: Int!): Int!
+		addHeadlines: Boolean!
   }
 `

@@ -47,11 +47,49 @@ export const resolvers = {
     },
 
     sourcesCount: async (parent, args, ctx: Context) => {
+			console.log('no cache')
       return await ctx.prisma.source.count()
+    },
+
+		getHeadlines: async (parent, args, ctx: Context) => {
+			console.log('no cache')
+      const headlines =  await ctx.prisma.headlines.findMany({
+				include: {
+					article: true
+				}
+			})
+
+			return headlines.map((headline) => headline.article)
     }
   },
   Mutation: {
     ...rssMutationResolvers,
+		addHeadlines: async (parent, args, ctx: Context) => {
+			try {
+				const { prisma } = ctx
+				await prisma.headlines.deleteMany()
+	
+				const articles = await prisma.article.findMany({
+					take: 5
+				})
+	
+				for (let i = 0; i < articles.length; i++) {
+					const article = articles[i]
+					await prisma.headlines.create({
+						data: {
+							article: {
+								connect: {
+									id: article.id
+								}
+							}
+						}
+					})
+				}
+				return true
+			} catch (err) {
+				return false
+			}
+		},
     deleteUser: (parent, args, ctx: Context) => {
       return ctx.prisma.user.delete({
         where: { id: args.userId },

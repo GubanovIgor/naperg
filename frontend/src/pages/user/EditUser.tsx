@@ -41,7 +41,7 @@ const EditUser = (props: Props) => {
           userId: props.user.id,
         },
       });
-    } catch (e) {
+    } catch (e: any) {
       e.graphQLErrors.some((graphQLError: any) =>
         setMessage(graphQLError.message)
       );

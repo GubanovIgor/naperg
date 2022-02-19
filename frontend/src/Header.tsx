@@ -49,10 +49,10 @@ export default function Header() {
             </IconButton>
             <Typography variant="h6" className={classes.title}>
               <Link className={classes.title} to="/">
-                Naperg
+                Moscow Team
               </Link>
             </Typography>
-            <a href="https://github.com/alan345/naperg">
+            {/* <a href="https://github.com/alan345/naperg">
               <IconButton
                 edge="start"
                 className={classes.githubButton}
@@ -61,7 +61,7 @@ export default function Header() {
               >
                 <GitHubIcon />
               </IconButton>
-            </a>
+            </a> */}
             {context.user.id ? (
               <>
                 <Logout />
