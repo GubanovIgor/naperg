@@ -69,7 +69,6 @@ export const resolvers = {
     },
 
     userFeeds: async (parent, args, ctx: Context) => {
-      console.log('works')
       const userId = utils.getUserId(ctx)
 
       if (!userId) {
@@ -81,7 +80,6 @@ export const resolvers = {
         include: { Feed: true }
       })
 
-      console.log(user?.Feed)
       return user?.Feed
     }
   },

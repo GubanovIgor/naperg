@@ -36,20 +36,11 @@ const Home = () => {
   const history = useHistory();
   const context = React.useContext(PostsContext);
   const { data } = useQuery(QUERY);
+  const userFeeds = useQuery(userFeedsQuery);
   const [newFeed, setNewFeed] = React.useState("");
   const [createFeed] = useMutation(createFeedMutation);
 
-  // useEffect(() => {
-  //   const init = async () => {
-  //     const result = await request("http://localhost:4000/", userFeedsQuery, {});
-  //     console.log("result: ", result);
-  //   };
-
-  //   init();
-  // }, []);
-
   React.useEffect(() => {
-    console.log(context.user.id === "");
     if (!context.user.id) {
       history.push("/login");
     }
@@ -61,6 +52,8 @@ const Home = () => {
         title: newFeed,
       },
     });
+
+
   };
 
   const renderHeadlines = () => {
@@ -75,6 +68,16 @@ const Home = () => {
           <br />
         </div>
       );
+    });
+  };
+
+  const renderUserFeeds = () => {
+    if (!userFeeds.data) {
+      return <div>There is no feeds yet.</div>;
+    }
+
+    return userFeeds.data.userFeeds.map((userFeed) => {
+      return <div key={userFeed.title}>{userFeed.title}</div>;
     });
   };
 
@@ -103,6 +106,10 @@ const Home = () => {
       <div>
         <h4>Headlines</h4>
         {renderHeadlines()}
+      </div>
+      <div>
+        <h4>Feeds</h4>
+        {renderUserFeeds()}
       </div>
       <div>
         <Link to={`/user/${context.user.id}`}>My profile</Link>
