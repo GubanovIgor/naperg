@@ -22,7 +22,7 @@ const ForgetPassword = () => {
     if (context.user.id) {
       history.push("/");
     }
-  }, [context]);
+  }, [context, history]);
 
   const loginF = async () => {
     let dataUser;

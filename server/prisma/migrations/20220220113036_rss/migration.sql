@@ -17,9 +17,9 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Feed" (
     "id" TEXT NOT NULL PRIMARY KEY,
+    "title" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
-    "url" TEXT NOT NULL,
     "ownerId" TEXT NOT NULL,
     CONSTRAINT "Feed_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -47,7 +47,6 @@ CREATE TABLE "Article" (
     "feedId" TEXT,
     CONSTRAINT "Article_sourceId_fkey" FOREIGN KEY ("sourceId") REFERENCES "Source" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Article_feedId_fkey" FOREIGN KEY ("feedId") REFERENCES "Feed" ("id") ON DELETE SET NULL ON UPDATE CASCADE
-<<<<<<< HEAD:server/prisma/migrations/20220219115132_/migration.sql
 );
 
 -- CreateTable
@@ -57,8 +56,6 @@ CREATE TABLE "Headlines" (
     "updatedAt" DATETIME NOT NULL,
     "articleId" TEXT NOT NULL,
     CONSTRAINT "Headlines_articleId_fkey" FOREIGN KEY ("articleId") REFERENCES "Article" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-=======
->>>>>>> 6a765a777dd23f7dd7e9d405049d2d696d856b1a:server/prisma/migrations/20220219120639_rss/migration.sql
 );
 
 -- CreateTable

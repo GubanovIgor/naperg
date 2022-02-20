@@ -5,7 +5,6 @@ import {
   Typography,
   Button,
 } from "@material-ui/core";
-import GitHubIcon from "@material-ui/icons/GitHub";
 import React from "react";
 import { Link } from "react-router-dom";
 import { PostsContext } from "./Context";

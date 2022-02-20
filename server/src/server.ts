@@ -10,7 +10,7 @@ import { feed } from './typeDefs/feed'
 import { mutation } from './typeDefs/mutation'
 
 const schema = makeExecutableSchema({
-  typeDefs: [query, user, article, mutation],
+  typeDefs: [query, user, article, mutation, feed],
   resolvers,
 })
 

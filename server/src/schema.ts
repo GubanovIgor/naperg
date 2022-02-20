@@ -66,7 +66,8 @@ export const resolvers = {
 				}
 			})
 			return headlines.map((headline) => headline.article)
-		},
+    },
+
     userFeeds: async (parent, args, ctx: Context) => {
       console.log('works')
       const userId = utils.getUserId(ctx)
@@ -90,11 +91,11 @@ export const resolvers = {
 			try {
 				const { prisma } = ctx
 				await prisma.headlines.deleteMany()
-	
+
 				const articles = await prisma.article.findMany({
 					take: 5
 				})
-	
+
 				for (let i = 0; i < articles.length; i++) {
 					const article = articles[i]
 					await prisma.headlines.create({
@@ -111,12 +112,14 @@ export const resolvers = {
 			} catch (err) {
 				return false
 			}
-		},
+    },
+
     deleteUser: (parent, args, ctx: Context) => {
       return ctx.prisma.user.delete({
         where: { id: args.userId },
       })
     },
+
     updateUser: async (parent, args, ctx: Context) => {
       const userId = utils.getUserId(ctx)
       const me = await ctx.prisma.user.findUnique({ where: { id: userId } })
@@ -155,6 +158,7 @@ export const resolvers = {
 
       return true
     },
+
     resetPassword: async (parent, args, ctx: Context) => {
       if (!args.resetPasswordToken) {
         throw new Error('Error. No token')
@@ -198,6 +202,7 @@ export const resolvers = {
         }),
       }
     },
+
     signupUser: async (parent, args, ctx: Context) => {
       const userTest = await ctx.prisma.user.findUnique({
         where: {
@@ -230,6 +235,7 @@ export const resolvers = {
         }),
       }
     },
+
     loginUser: async (parent, args, ctx: Context) => {
       let user = await ctx.prisma.user.findFirst({
         where: {

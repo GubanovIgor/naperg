@@ -31,9 +31,9 @@ model User {
 // meanings in this context.)
 model Feed {
   id        String    @id @default(cuid())
+  title     String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  url       String
   owner     User      @relation(fields: [ownerId], references: [id])
   ownerId   String
   sources   Source[]

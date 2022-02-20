@@ -20,7 +20,7 @@ export default function Me() {
     if (data?.me?.id) {
       context.updateUser(data.me)
     }
-  }, [data])
+  }, [data, context])
 
   return null
 }

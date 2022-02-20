@@ -8,6 +8,7 @@ export const mutation = gql`
     forgetPassword(email: String!): Boolean!
     resetPassword(password: String!, resetPasswordToken: String!): AuthPayload!
     deleteUser(userId: String!): User!
+    createFeed(title: String!): Feed!
 
     # TODO: Please write the implementation of this endpoint. It takes an
     # optional argument, which you may or may not use. Think about the different

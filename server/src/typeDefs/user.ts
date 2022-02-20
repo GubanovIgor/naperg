@@ -22,6 +22,7 @@ export const user = gql`
     lastLogin: DateTime
     feed: [Feed]
   }
+
   enum Role {
     ADMIN
     USER
@@ -31,14 +32,17 @@ export const user = gql`
     search: String
     name: SearchObj
   }
+
   input SearchObj {
     contains: String
   }
+
   type UsersPagination {
     users: [User!]!
     count: Float!
     take: Float!
   }
+
   input UserUpdateInput {
     name: String
     role: Role
